@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#define MAX 80
+#include <unistd.h>
+#include <arpa/inet.h>
+#define MAX 1024
 #define PORT 8080
 #define SA struct sockaddr
 
@@ -14,10 +16,12 @@ void func(int sockfd)
     for (;;)
     {
         bzero(buff, sizeof(buff));
-        printf("Enter the string : ");
+        //printf("Enter the string : ");
         n = 0;
         while ((buff[n++] = getchar()) != '\n')
             ;
+	
+
         write(sockfd, buff, sizeof(buff));
         bzero(buff, sizeof(buff));
         read(sockfd, buff, sizeof(buff));
@@ -59,6 +63,17 @@ int main()
     }
     else
         printf("connected to the server..\n");
+	printf ("Locatii disponibile: \n");
+	printf ("1.TImisaoara\n");
+	printf ("2. Bucuresti\n");
+	printf ("3. Cluj-Napoca\n\n\n");	
+	printf ("Optiuni disponibile: \n");
+	printf ("a. Vizualizare progonoza meteo \n");
+	printf ("b. Descarcare raport detaliat \n");
+	printf ("Alegeti optiunea (a/b): " );
+	
+	
+
 
     // function for chat
     func(sockfd);
@@ -66,3 +81,4 @@ int main()
     // close the socket
     close(sockfd);
 }
+
