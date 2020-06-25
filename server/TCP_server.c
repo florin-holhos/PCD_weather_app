@@ -5,9 +5,13 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <curl/curl.h>
+
 #define MAX 80
 #define PORT 8080
 #define SA struct sockaddr
+#define DARK_SKY_API_URL \
+    https: //api.darksky.net/forecast/32f1f87b5680f82c0b095474b9ce7e66
 
 // Function designed for chat between client and server.
 void func(int sockfd)
@@ -42,9 +46,33 @@ void func(int sockfd)
 }
 
 // Driver function
-int main()
+int main(int argc, char **argv)
 {
-    int sockfd, connfd, len;
+    CURL *curl;
+    FILE *fp;
+    int result;
+
+    fp = fopen(argv[2], "wb");
+
+    curl = curl_easy_init();
+
+    curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+    result = curl_easy_perform(curl);
+
+    if (result == CURLE_OK)
+        printf("Download successfull!\n");
+    else
+        printf("ERROR: %s\n", curl_easy_strerror(result));
+
+    fclose(fp);
+
+    curl_easy_cleanup(curl);
+
+    int sockfd,
+        connfd, len;
     struct sockaddr_in servaddr, cli;
 
     // socket create and verification
@@ -79,7 +107,7 @@ int main()
         exit(0);
     }
     else
-        printf("Server listening..\n");
+        printf("Server listening on port %d\n", PORT);
     len = sizeof(cli);
 
     // Accept the data packet from client and verification

@@ -69,3 +69,14 @@ From client: ping
 From Server : pong
 Enter the string :
 ```
+
+## Fetch weather
+
+> Terminal 1
+
+```
+$gcc TCP_server.c -lcurl -o TCP_server
+$./TCP_server https://api.darksky.net/forecast/32f1f87b5680f82c0b095474b9ce7e66/37.8267,-122.4233 data
+```
+
+data => numele fisierului pentru output
